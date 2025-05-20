@@ -19,14 +19,18 @@ export async function GET(request: NextRequest) {
       const singleDate = new Date(singleDateParam);
       console.log("singleDate", singleDate);
       startDate = new Date(singleDate);
+      startDate.setDate(startDate.getDate() + 1);
       startDate.setHours(0, 0, 0, 0);
       console.log("startDate", startDate);
       endDate = new Date(singleDate);
+      endDate.setDate(endDate.getDate() + 1);
       endDate.setHours(23, 59, 59, 999);
       console.log("endDate", endDate);
     } else if (startDateParam && endDateParam) {
       startDate = new Date(startDateParam);
+      console.log("startDate param", startDate);
       endDate = new Date(endDateParam);
+      console.log("endDate param", endDate);
       // Set end date to end of day
       endDate.setHours(23, 59, 59, 999);
     }

@@ -151,6 +151,8 @@ export async function getOrders(
 
   // Apply date filter if provided
   if (startDate && endDate) {
+    console.log("startDate in getOrders", startDate);
+    console.log("endDate in getOrders", endDate);
     query = query.where(
       and(gte(orders.date, startDate), lte(orders.date, endDate))
     );
