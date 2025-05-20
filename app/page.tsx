@@ -24,29 +24,38 @@ export default function Dashboard() {
     setSingleDate(undefined);
   };
 
-  const handleDateRangeChange = (range: DateRange | undefined) => {
-    if (range?.from) {
-      const from = new Date(range.from);
-      from.setHours(0, 0, 0, 0);
-      if (range.to) {
-        const to = new Date(range.to);
-        to.setHours(23, 59, 59, 999);
-        setDateRange({ from, to });
-      } else {
-        setDateRange({ from });
-      }
-    } else {
-      setDateRange(undefined);
-    }
-  };
+  // In the Dashboard component's handleSingleDateChange and handleDateRangeChange functions:
 
   const handleSingleDateChange = (date: Date | undefined) => {
     if (date) {
-      const normalizedDate = new Date(date);
-      normalizedDate.setHours(0, 0, 0, 0);
-      setSingleDate(normalizedDate);
+      // Normalize to start of local day and convert to UTC
+      const adjustedDate = new Date(date);
+      adjustedDate.setHours(0, 0, 0, 0);
+      const utcDate = new Date(adjustedDate.toISOString().slice(0, 19));
+      setSingleDate(utcDate);
     } else {
       setSingleDate(undefined);
+    }
+  };
+
+  const handleDateRangeChange = (range: DateRange | undefined) => {
+    if (range?.from) {
+      // Normalize start to local midnight and convert to UTC
+      const from = new Date(range.from);
+      from.setHours(0, 0, 0, 0);
+      const fromUTC = new Date(from.toISOString().slice(0, 19));
+
+      let toUTC: Date | undefined;
+      if (range.to) {
+        // Normalize end to local end of day and convert to UTC
+        const to = new Date(range.to);
+        to.setHours(23, 59, 59, 999);
+        toUTC = new Date(to.toISOString().slice(0, 19));
+      }
+
+      setDateRange({ from: fromUTC, to: toUTC });
+    } else {
+      setDateRange(undefined);
     }
   };
 
