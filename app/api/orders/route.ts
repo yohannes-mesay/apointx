@@ -17,15 +17,18 @@ export async function GET(request: NextRequest) {
     if (singleDateParam) {
       // For single date, set start date to beginning of day and end date to end of day
       const singleDate = new Date(singleDateParam);
+      console.log("singleDate", singleDate);
       startDate = new Date(singleDate);
-      startDate.setUTCHours(0, 0, 0, 0);
+      startDate.setHours(0, 0, 0, 0);
+      console.log("startDate", startDate);
       endDate = new Date(singleDate);
-      endDate.setUTCHours(23, 59, 59, 999);
+      endDate.setHours(23, 59, 59, 999);
+      console.log("endDate", endDate);
     } else if (startDateParam && endDateParam) {
       startDate = new Date(startDateParam);
       endDate = new Date(endDateParam);
       // Set end date to end of day
-      endDate.setUTCHours(23, 59, 59, 999);
+      endDate.setHours(23, 59, 59, 999);
     }
 
     const [orders, totalCount] = await Promise.all([
