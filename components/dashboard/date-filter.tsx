@@ -2,7 +2,8 @@
 import { format } from "date-fns";
 import { CalendarIcon } from "lucide-react";
 import type { DateRange } from "react-day-picker";
-
+import { startOfDay } from "date-fns"; // ← Core date utility
+import { toZonedTime, formatInTimeZone } from "date-fns-tz";
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
@@ -108,9 +109,10 @@ export function DateFilter({
               selected={singleDate}
               onSelect={(date) => {
                 if (date) {
-                  const newDate = new Date(date);
-                  newDate.setHours(0, 0, 0, 0);
-                  onSingleDateChange(newDate);
+                  // Convert UTC instant to local-zone date
+                  const zonedDate = toZonedTime(date, "Africa/Addis_Ababa");
+                  const normalized = startOfDay(zonedDate);
+                  onSingleDateChange(normalized);
                 } else {
                   onSingleDateChange(undefined);
                 }
