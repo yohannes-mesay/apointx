@@ -56,7 +56,7 @@ export function OrdersTable({
   singleDate,
   dateMode,
 }: OrdersTableProps) {
-  const [orders, setOrders] = useState<Order[]>([]);
+const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
@@ -106,7 +106,7 @@ export function OrdersTable({
 
         const data: OrdersResponse = await response.json();
         console.log("orders responce", data.orders);
-        setOrders(data.orders);
+      setOrders(data.orders);
         setPagination(data.pagination);
       } catch (error) {
         console.error("Error fetching orders:", error);
@@ -200,9 +200,9 @@ export function OrdersTable({
                     <TableCell>
                       {order.date
                         ? formatInTimeZone(
-                            order.date, // your ISO string or Date
-                            "UTC", // <-- force UTC timezone
-                            "MMM dd, yyyy HH:mm" // your format mask
+                            order.date,
+                            "UTC",
+                            "MMM dd, yyyy HH:mm"
                           )
                         : "-"}
                     </TableCell>
