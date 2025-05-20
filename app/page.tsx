@@ -11,7 +11,7 @@ import { OrdersTable } from "@/components/dashboard/orders-table";
 import { RealTimeUpdates } from "@/components/dashboard/real-time-updates";
 import { Button } from "@/components/ui/button";
 import { RefreshCw } from "lucide-react";
-import { startOfDay, endOfDay } from "date-fns";
+import { parseISO } from "date-fns";
 
 export default function Dashboard() {
   const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined);
@@ -26,26 +26,11 @@ export default function Dashboard() {
   };
 
   const handleDateRangeChange = (range: DateRange | undefined) => {
-    if (range?.from) {
-      const from = startOfDay(new Date(range.from));
-      if (range.to) {
-        const to = endOfDay(new Date(range.to));
-        setDateRange({ from, to });
-      } else {
-        setDateRange({ from });
-      }
-    } else {
-      setDateRange(undefined);
-    }
+    setDateRange(range);
   };
 
   const handleSingleDateChange = (date: Date | undefined) => {
-    if (date) {
-      const normalizedDate = startOfDay(new Date(date));
-      setSingleDate(normalizedDate);
-    } else {
-      setSingleDate(undefined);
-    }
+    setSingleDate(date);
   };
 
   return (
