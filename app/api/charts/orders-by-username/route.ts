@@ -1,6 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server";
 import { getOrderCountsByUsername } from "@/lib/db/queries";
-import { startOfDay, endOfDay, parseISO } from "date-fns";
 
 export async function GET(request: NextRequest) {
   try {
@@ -14,12 +13,16 @@ export async function GET(request: NextRequest) {
 
     if (singleDateParam) {
       // For single date, set start date to beginning of day and end date to end of day
-      const singleDate = parseISO(singleDateParam);
-      startDate = startOfDay(singleDate);
-      endDate = endOfDay(singleDate);
+      const singleDate = new Date(singleDateParam);
+      startDate = new Date(singleDate);
+      startDate.setHours(0, 0, 0, 0);
+      endDate = new Date(singleDate);
+      endDate.setHours(23, 59, 59, 999);
     } else if (startDateParam && endDateParam) {
-      startDate = startOfDay(parseISO(startDateParam));
-      endDate = endOfDay(parseISO(endDateParam));
+      startDate = new Date(startDateParam);
+      endDate = new Date(endDateParam);
+      // Set end date to end of day
+      endDate.setHours(23, 59, 59, 999);
     }
 
     const data = await getOrderCountsByUsername(startDate, endDate);
