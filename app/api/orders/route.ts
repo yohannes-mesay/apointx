@@ -15,6 +15,7 @@ export async function GET(request: NextRequest) {
     let endDate: Date | undefined;
 
     // const singleDate = new Date(singleDateParam);
+    // singleDate.setDate(singleDate.getDate() + 1);
     // console.log("singleDate", singleDate);
     // startDate = new Date(singleDate);
     // startDate.setDate(startDate.getDate() + 1);
@@ -27,14 +28,14 @@ export async function GET(request: NextRequest) {
     if (singleDateParam) {
       // For single date, set start date to beginning of day and end date to end of day
       const singleDate = new Date(singleDateParam);
+      singleDate.setDate(singleDate.getDate() + 1);
+      // singleDate.setDate(singleDate.getDate() + 1);
       console.log("singleDate", singleDate);
       startDate = new Date(singleDate);
-      // Set to 3 AM UTC (6 AM Nairobi time)
-      startDate.setUTCHours(3, 0, 0, 0);
+      startDate.setHours(0, 0, 0, 0);
       console.log("startDate", startDate);
       endDate = new Date(singleDate);
-      // Set to 2:59:59.999 AM UTC (5:59:59.999 AM Nairobi time)
-      endDate.setUTCHours(26, 59, 59, 999);
+      endDate.setHours(23, 59, 59, 999);
       console.log("endDate", endDate);
     } else if (startDateParam && endDateParam) {
       startDate = new Date(startDateParam);
