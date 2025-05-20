@@ -1,5 +1,6 @@
 "use client";
 import { format } from "date-fns";
+import { formatInTimeZone } from "date-fns-tz";
 import { CalendarIcon } from "lucide-react";
 import type { DateRange } from "react-day-picker";
 
@@ -13,6 +14,9 @@ import {
 } from "@/components/ui/popover";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
+
+// Get user's timezone
+const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
 interface DateFilterProps {
   dateRange: DateRange | undefined;
@@ -33,6 +37,10 @@ export function DateFilter({
   onModeChange,
   className,
 }: DateFilterProps) {
+  const formatDate = (date: Date) => {
+    return formatInTimeZone(date, userTimeZone, "LLL dd, y");
+  };
+
   return (
     <div className={cn("grid gap-2", className)}>
       <Popover>
@@ -50,17 +58,16 @@ export function DateFilter({
               dateRange?.from ? (
                 dateRange.to ? (
                   <>
-                    {format(dateRange.from, "LLL dd, y")} -{" "}
-                    {format(dateRange.to, "LLL dd, y")}
+                    {formatDate(dateRange.from)} - {formatDate(dateRange.to)}
                   </>
                 ) : (
-                  format(dateRange.from, "LLL dd, y")
+                  formatDate(dateRange.from)
                 )
               ) : (
                 <span>Pick a date range</span>
               )
             ) : singleDate ? (
-              format(singleDate, "LLL dd, y")
+              formatDate(singleDate)
             ) : (
               <span>Pick a date</span>
             )}

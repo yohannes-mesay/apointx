@@ -11,6 +11,7 @@ import { OrdersTable } from "@/components/dashboard/orders-table";
 import { RealTimeUpdates } from "@/components/dashboard/real-time-updates";
 import { Button } from "@/components/ui/button";
 import { RefreshCw } from "lucide-react";
+import { startOfDay, endOfDay } from "date-fns";
 
 export default function Dashboard() {
   const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined);
@@ -24,38 +25,26 @@ export default function Dashboard() {
     setSingleDate(undefined);
   };
 
-  // In the Dashboard component's handleSingleDateChange and handleDateRangeChange functions:
-
-  const handleSingleDateChange = (date: Date | undefined) => {
-    if (date) {
-      // Normalize to start of local day and convert to UTC
-      const adjustedDate = new Date(date);
-      adjustedDate.setHours(0, 0, 0, 0);
-      const utcDate = new Date(adjustedDate.toISOString().slice(0, 19));
-      setSingleDate(utcDate);
+  const handleDateRangeChange = (range: DateRange | undefined) => {
+    if (range?.from) {
+      const from = startOfDay(new Date(range.from));
+      if (range.to) {
+        const to = endOfDay(new Date(range.to));
+        setDateRange({ from, to });
+      } else {
+        setDateRange({ from });
+      }
     } else {
-      setSingleDate(undefined);
+      setDateRange(undefined);
     }
   };
 
-  const handleDateRangeChange = (range: DateRange | undefined) => {
-    if (range?.from) {
-      // Normalize start to local midnight and convert to UTC
-      const from = new Date(range.from);
-      from.setHours(0, 0, 0, 0);
-      const fromUTC = new Date(from.toISOString().slice(0, 19));
-
-      let toUTC: Date | undefined;
-      if (range.to) {
-        // Normalize end to local end of day and convert to UTC
-        const to = new Date(range.to);
-        to.setHours(23, 59, 59, 999);
-        toUTC = new Date(to.toISOString().slice(0, 19));
-      }
-
-      setDateRange({ from: fromUTC, to: toUTC });
+  const handleSingleDateChange = (date: Date | undefined) => {
+    if (date) {
+      const normalizedDate = startOfDay(new Date(date));
+      setSingleDate(normalizedDate);
     } else {
-      setDateRange(undefined);
+      setSingleDate(undefined);
     }
   };
 
