@@ -1,9 +1,7 @@
 "use client";
 import { format } from "date-fns";
-import { formatInTimeZone } from "date-fns-tz";
 import { CalendarIcon } from "lucide-react";
 import type { DateRange } from "react-day-picker";
-import { useState, useEffect } from "react";
 
 import { cn } from "@/lib/utils";
 import { Button } from "@/components/ui/button";
@@ -15,9 +13,6 @@ import {
 } from "@/components/ui/popover";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Label } from "@/components/ui/label";
-
-// Get user's timezone
-const userTimeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
 interface DateFilterProps {
   dateRange: DateRange | undefined;
@@ -38,30 +33,6 @@ export function DateFilter({
   onModeChange,
   className,
 }: DateFilterProps) {
-  // Local state to ensure consistent date handling during SSR
-  const [isClient, setIsClient] = useState(false);
-
-  useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  const formatDate = (date: Date) => {
-    return formatInTimeZone(date, userTimeZone, "LLL dd, y");
-  };
-
-  // Force client-side rendering for Calendar to avoid SSR mismatch
-  const handleRangeSelect = (range: DateRange | undefined) => {
-    if (isClient) {
-      onDateRangeChange(range);
-    }
-  };
-
-  const handleSingleSelect = (date: Date | undefined) => {
-    if (isClient) {
-      onSingleDateChange(date);
-    }
-  };
-
   return (
     <div className={cn("grid gap-2", className)}>
       <Popover>
@@ -79,16 +50,17 @@ export function DateFilter({
               dateRange?.from ? (
                 dateRange.to ? (
                   <>
-                    {formatDate(dateRange.from)} - {formatDate(dateRange.to)}
+                    {format(dateRange.from, "LLL dd, y")} -{" "}
+                    {format(dateRange.to, "LLL dd, y")}
                   </>
                 ) : (
-                  formatDate(dateRange.from)
+                  format(dateRange.from, "LLL dd, y")
                 )
               ) : (
                 <span>Pick a date range</span>
               )
             ) : singleDate ? (
-              formatDate(singleDate)
+              format(singleDate, "LLL dd, y")
             ) : (
               <span>Pick a date</span>
             )}
@@ -118,18 +90,15 @@ export function DateFilter({
               </TabsContent>
             </Tabs>
           </div>
-          {!isClient ? null : mode === "range" ? (
+          {mode === "range" ? (
             <Calendar
               initialFocus
               mode="range"
               defaultMonth={dateRange?.from}
               selected={dateRange}
-              onSelect={handleRangeSelect}
+              onSelect={onDateRangeChange}
               numberOfMonths={2}
               className="rounded-md border"
-              disabled={{ before: new Date(2000, 0, 1) }}
-              fromYear={2000}
-              toYear={2100}
             />
           ) : (
             <Calendar
@@ -137,11 +106,8 @@ export function DateFilter({
               mode="single"
               defaultMonth={singleDate}
               selected={singleDate}
-              onSelect={handleSingleSelect}
+              onSelect={onSingleDateChange}
               className="rounded-md border"
-              disabled={{ before: new Date(2000, 0, 1) }}
-              fromYear={2000}
-              toYear={2100}
             />
           )}
         </PopoverContent>
