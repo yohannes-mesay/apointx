@@ -14,17 +14,27 @@ export async function GET(request: NextRequest) {
     let startDate: Date | undefined;
     let endDate: Date | undefined;
 
+    // const singleDate = new Date(singleDateParam);
+    // console.log("singleDate", singleDate);
+    // startDate = new Date(singleDate);
+    // startDate.setDate(startDate.getDate() + 1);
+    // startDate.setHours(0, 0, 0, 0);
+    // console.log("startDate", startDate);
+    // endDate = new Date(singleDate);
+    // endDate.setDate(endDate.getDate() + 1);
+    // endDate.setHours(23, 59, 59, 999);
+    // console.log("endDate", endDate);
     if (singleDateParam) {
       // For single date, set start date to beginning of day and end date to end of day
       const singleDate = new Date(singleDateParam);
       console.log("singleDate", singleDate);
       startDate = new Date(singleDate);
-      startDate.setDate(startDate.getDate() + 1);
-      startDate.setHours(0, 0, 0, 0);
+      // Set to 3 AM UTC (6 AM Nairobi time)
+      startDate.setUTCHours(3, 0, 0, 0);
       console.log("startDate", startDate);
       endDate = new Date(singleDate);
-      endDate.setDate(endDate.getDate() + 1);
-      endDate.setHours(23, 59, 59, 999);
+      // Set to 2:59:59.999 AM UTC (5:59:59.999 AM Nairobi time)
+      endDate.setUTCHours(26, 59, 59, 999);
       console.log("endDate", endDate);
     } else if (startDateParam && endDateParam) {
       startDate = new Date(startDateParam);
