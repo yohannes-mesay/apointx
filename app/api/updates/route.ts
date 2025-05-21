@@ -75,7 +75,7 @@ async function expireStaleOrders() {
     .where(
       sql`${orders.paymentStatus} = 'Pending' AND ${orders.date} < ${threshold}`
     );
-  // console.log("staleOrders", staleOrders);
+  console.log("checking every 1 hour", staleOrders);
   // console.log("treshold", threshold);
   if (staleOrders.length === 0) return;
 
