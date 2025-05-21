@@ -21,7 +21,7 @@ import {
   PaginationPrevious,
 } from "@/components/ui/pagination";
 import { Skeleton } from "@/components/ui/skeleton";
-import { Search } from "lucide-react";
+import { RotateCw, Search } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
 import {
   Select,
@@ -56,7 +56,7 @@ export function OrdersTable({
   singleDate,
   dateMode,
 }: OrdersTableProps) {
-const [orders, setOrders] = useState<Order[]>([]);
+  const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState("");
   const [debouncedSearchTerm, setDebouncedSearchTerm] = useState("");
@@ -67,6 +67,7 @@ const [orders, setOrders] = useState<Order[]>([]);
     totalCount: 0,
     totalPages: 1,
   });
+  const [refetch, setRefetch] = useState(false);
 
   // Debounce search term
   useEffect(() => {
@@ -106,7 +107,7 @@ const [orders, setOrders] = useState<Order[]>([]);
 
         const data: OrdersResponse = await response.json();
         console.log("orders responce", data.orders);
-      setOrders(data.orders);
+        setOrders(data.orders);
         setPagination(data.pagination);
       } catch (error) {
         console.error("Error fetching orders:", error);
@@ -124,6 +125,7 @@ const [orders, setOrders] = useState<Order[]>([]);
     endDate,
     singleDate,
     dateMode,
+    refetch,
   ]);
 
   const getStatusColor = (status: string | null) => {
@@ -145,7 +147,13 @@ const [orders, setOrders] = useState<Order[]>([]);
     <Card>
       <CardHeader>
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-          <CardTitle>Orders</CardTitle>
+          <div className="flex items-center gap-2">
+            <CardTitle>Orders</CardTitle>
+            <RotateCw
+              className="w-6 h-6 mt-1 cursor-pointer"
+              onClick={() => setRefetch(!refetch)}
+            />
+          </div>
           <div className="flex flex-col sm:flex-row gap-2 sm:items-center">
             <div className="relative w-full sm:w-64">
               <Search className="absolute left-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
