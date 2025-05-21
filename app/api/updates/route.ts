@@ -67,7 +67,7 @@ export async function GET(request: NextRequest) {
  * and if still unpaid updates them to "EXPIRED".
  */
 async function expireStaleOrders() {
-  const threshold = sql`NOW() - INTERVAL '3 hours'`;
+  const threshold = sql`NOW() - INTERVAL '1 hours'`;
 
   const staleOrders = await db
     .select({ id: orders.id, traceNumber: orders.traceNumber })

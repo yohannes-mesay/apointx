@@ -25,7 +25,7 @@ export function RealTimeUpdates() {
     // Create audio element for notifications
     audioRef.current = new Audio("/notification.mp3");
 
-    // Check for updates every 10 seconds
+    // Check for updates every 10 min
     const intervalId = setInterval(checkForUpdates, 600000);
 
     return () => {
