@@ -8,6 +8,7 @@ export async function GET(request: NextRequest) {
     const endDateParam = searchParams.get("endDate");
     const singleDateParam = searchParams.get("singleDate");
     const searchTerm = searchParams.get("search") || undefined;
+    const username = searchParams.get("username") || undefined;
     const page = Number.parseInt(searchParams.get("page") || "1");
     const pageSize = Number.parseInt(searchParams.get("pageSize") || "10");
 
@@ -47,8 +48,8 @@ export async function GET(request: NextRequest) {
     }
 
     const [orders, totalCount] = await Promise.all([
-      getOrders(startDate, endDate, searchTerm, page, pageSize),
-      getOrdersCount(startDate, endDate, searchTerm),
+      getOrders(startDate, endDate, searchTerm, page, pageSize, username),
+      getOrdersCount(startDate, endDate, searchTerm, username),
     ]);
 
     return NextResponse.json({

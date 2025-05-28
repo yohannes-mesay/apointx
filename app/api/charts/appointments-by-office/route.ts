@@ -7,6 +7,7 @@ export async function GET(request: NextRequest) {
     const startDateParam = searchParams.get("startDate");
     const endDateParam = searchParams.get("endDate");
     const singleDateParam = searchParams.get("singleDate");
+    const username = searchParams.get("username") || undefined;
 
     let startDate: Date | undefined;
     let endDate: Date | undefined;
@@ -26,7 +27,7 @@ export async function GET(request: NextRequest) {
       endDate.setHours(23, 59, 59, 999);
     }
 
-    const data = await getAppointmentsByOffice(startDate, endDate);
+    const data = await getAppointmentsByOffice(startDate, endDate, username);
 
     return NextResponse.json(data);
   } catch (error) {

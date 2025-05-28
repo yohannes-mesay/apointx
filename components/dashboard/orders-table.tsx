@@ -38,6 +38,7 @@ interface OrdersTableProps {
   endDate?: Date;
   singleDate?: Date;
   dateMode: "single" | "range";
+  username?: string;
 }
 
 interface OrdersResponse {
@@ -55,6 +56,7 @@ export function OrdersTable({
   endDate,
   singleDate,
   dateMode,
+  username,
 }: OrdersTableProps) {
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
@@ -100,6 +102,10 @@ export function OrdersTable({
           params.append("singleDate", singleDate.toISOString());
         }
 
+        if (username) {
+          params.append("username", username);
+        }
+
         if (debouncedSearchTerm) params.append("search", debouncedSearchTerm);
 
         const response = await fetch(`/api/orders?${params.toString()}`);
@@ -123,6 +129,7 @@ export function OrdersTable({
     debouncedSearchTerm,
     startDate,
     endDate,
+    username,
     singleDate,
     dateMode,
     refetch,

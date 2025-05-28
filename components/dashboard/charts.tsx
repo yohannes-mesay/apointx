@@ -48,6 +48,7 @@ interface ChartsProps {
   endDate?: Date;
   singleDate?: Date;
   dateMode: "single" | "range";
+  username?: string;
 }
 
 export function Charts({
@@ -55,6 +56,7 @@ export function Charts({
   endDate,
   singleDate,
   dateMode,
+  username,
 }: ChartsProps) {
   const [officeData, setOfficeData] = useState<AppointmentsByOffice[]>([]);
   const [timeData, setTimeData] = useState<AppointmentsByTime[]>([]);
@@ -72,6 +74,10 @@ export function Charts({
           params.append("endDate", endDate.toISOString());
         } else if (dateMode === "single" && singleDate) {
           params.append("singleDate", singleDate.toISOString());
+        }
+        
+        if (username) {
+          params.append("username", username);
         }
 
         const [officeResponse, timeResponse, usernameResponse] =
@@ -100,7 +106,7 @@ export function Charts({
     };
 
     fetchChartData();
-  }, [startDate, endDate, singleDate, dateMode]);
+  }, [startDate, endDate, singleDate, dateMode, username]);
 
   // Format time data for display
   const formattedTimeData = timeData.map((item) => ({

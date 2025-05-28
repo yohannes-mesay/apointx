@@ -6,6 +6,7 @@ import { Toaster } from "react-hot-toast";
 import { Header } from "@/components/dashboard/header";
 import { StatsCards } from "@/components/dashboard/stats-cards";
 import { DateFilter } from "@/components/dashboard/date-filter";
+import { UserFilter } from "@/components/dashboard/user-filter";
 import { Charts } from "@/components/dashboard/charts";
 import { OrdersTable } from "@/components/dashboard/orders-table";
 import { RealTimeUpdates } from "@/components/dashboard/real-time-updates";
@@ -16,12 +17,14 @@ export default function Dashboard() {
   const [dateRange, setDateRange] = useState<DateRange | undefined>(undefined);
   const [singleDate, setSingleDate] = useState<Date | undefined>(undefined);
   const [dateMode, setDateMode] = useState<"single" | "range">("single");
+  const [selectedUsername, setSelectedUsername] = useState<string | undefined>(undefined);
   const [refreshKey, setRefreshKey] = useState(0);
 
   const handleRefresh = () => {
     setRefreshKey((prev) => prev + 1);
     setDateRange(undefined);
     setSingleDate(undefined);
+    setSelectedUsername(undefined);
   };
 
   const handleDateRangeChange = (range: DateRange | undefined) => {
@@ -68,6 +71,11 @@ export default function Dashboard() {
               onModeChange={setDateMode}
               className="w-full sm:w-auto"
             />
+            <UserFilter
+              selectedUsername={selectedUsername}
+              onUsernameChange={setSelectedUsername}
+              className="w-full sm:w-auto"
+            />
             <Button
               variant="outline"
               size="icon"
@@ -89,6 +97,7 @@ export default function Dashboard() {
           endDate={dateRange?.to}
           singleDate={singleDate}
           dateMode={dateMode}
+          username={selectedUsername}
         />
 
         <Charts
@@ -97,6 +106,7 @@ export default function Dashboard() {
           endDate={dateRange?.to}
           singleDate={singleDate}
           dateMode={dateMode}
+          username={selectedUsername}
         />
 
         <OrdersTable
@@ -105,6 +115,7 @@ export default function Dashboard() {
           endDate={dateRange?.to}
           singleDate={singleDate}
           dateMode={dateMode}
+          username={selectedUsername}
         />
       </main>
     </div>

@@ -26,6 +26,7 @@ interface StatsCardsProps {
   endDate?: Date;
   singleDate?: Date;
   dateMode: "single" | "range";
+  username?: string;
 }
 
 export function StatsCards({
@@ -33,6 +34,7 @@ export function StatsCards({
   endDate,
   singleDate,
   dateMode,
+  username,
 }: StatsCardsProps) {
   const [stats, setStats] = useState<StatsData | null>(null);
   const [loading, setLoading] = useState(true);
@@ -49,6 +51,10 @@ export function StatsCards({
         } else if (dateMode === "single" && singleDate) {
           params.append("singleDate", singleDate.toISOString());
         }
+        
+        if (username) {
+          params.append("username", username);
+        }
 
         const response = await fetch(`/api/stats?${params.toString()}`);
         if (!response.ok) throw new Error("Failed to fetch stats");
@@ -63,7 +69,7 @@ export function StatsCards({
     };
 
     fetchStats();
-  }, [startDate, endDate, singleDate, dateMode]);
+  }, [startDate, endDate, singleDate, dateMode, username]);
 
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-5">

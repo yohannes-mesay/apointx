@@ -12,6 +12,7 @@ export async function GET(request: NextRequest) {
     const startDateParam = searchParams.get("startDate");
     const endDateParam = searchParams.get("endDate");
     const singleDateParam = searchParams.get("singleDate");
+    const username = searchParams.get("username") || undefined;
 
     let startDate: Date | undefined;
     let endDate: Date | undefined;
@@ -37,10 +38,10 @@ export async function GET(request: NextRequest) {
       paidOrdersCount,
       failedOrdersCount,
     ] = await Promise.all([
-      getAppointmentsCount(startDate, endDate),
-      getSuccessfulOrdersCount(startDate, endDate),
-      getPaidOrdersCount(startDate, endDate),
-      getFailedOrdersCount(startDate, endDate),
+      getAppointmentsCount(startDate, endDate, username),
+      getSuccessfulOrdersCount(startDate, endDate, username),
+      getPaidOrdersCount(startDate, endDate, username),
+      getFailedOrdersCount(startDate, endDate, username),
     ]);
 
     const failedAppointmentsCount = appointmentsCount - successfulOrdersCount;
