@@ -7,6 +7,7 @@ export async function GET(request: NextRequest) {
     const startDateParam = searchParams.get("startDate");
     const endDateParam = searchParams.get("endDate");
     const singleDateParam = searchParams.get("singleDate");
+    const username = searchParams.get("username") || undefined;
 
     let startDate: Date | undefined;
     let endDate: Date | undefined;
@@ -14,6 +15,7 @@ export async function GET(request: NextRequest) {
     if (singleDateParam) {
       // For single date, set start date to beginning of day and end date to end of day
       const singleDate = new Date(singleDateParam);
+      singleDate.setDate(singleDate.getDate() + 1);
       startDate = new Date(singleDate);
       startDate.setHours(0, 0, 0, 0);
       endDate = new Date(singleDate);
@@ -25,7 +27,7 @@ export async function GET(request: NextRequest) {
       endDate.setHours(23, 59, 59, 999);
     }
 
-    const data = await getAppointmentsByOffice(startDate, endDate);
+    const data = await getAppointmentsByOffice(startDate, endDate, username);
 
     return NextResponse.json(data);
   } catch (error) {

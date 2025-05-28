@@ -67,15 +67,27 @@ export async function GET(request: NextRequest) {
  * and if still unpaid updates them to "EXPIRED".
  */
 async function expireStaleOrders() {
-  const threshold = sql`NOW() - INTERVAL '3 hours'`;
+  const threshold = sql`NOW() - INTERVAL '1 hour'`;
 
   const staleOrders = await db
-    .select({ id: orders.id, traceNumber: orders.traceNumber })
+    .select({
+      id: orders.id,
+      traceNumber: orders.traceNumber,
+      date: orders.date,
+    })
     .from(orders)
     .where(
-      sql`${orders.paymentStatus} = 'Pending' AND ${orders.date} < ${threshold}`
+      sql`
+      ${orders.paymentStatus} = 'Pending'
+      AND (${orders.date} AT TIME ZONE 'Africa/Addis_Ababa') < ${threshold}
+    `
     );
-  // console.log("staleOrders", staleOrders);
+
+  console.log("checking every 1 hour", staleOrders);
+  const [{ cutoff }] = await db
+    .select({ cutoff: threshold })
+    .from(sql`(SELECT 1) AS dummy`);
+  // console.log("Cutoff timestamp:", cutoff);
   // console.log("treshold", threshold);
   if (staleOrders.length === 0) return;
 

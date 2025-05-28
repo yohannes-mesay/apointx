@@ -8,29 +8,48 @@ export async function GET(request: NextRequest) {
     const endDateParam = searchParams.get("endDate");
     const singleDateParam = searchParams.get("singleDate");
     const searchTerm = searchParams.get("search") || undefined;
+    const username = searchParams.get("username") || undefined;
     const page = Number.parseInt(searchParams.get("page") || "1");
     const pageSize = Number.parseInt(searchParams.get("pageSize") || "10");
 
     let startDate: Date | undefined;
     let endDate: Date | undefined;
 
+    // const singleDate = new Date(singleDateParam);
+    // singleDate.setDate(singleDate.getDate() + 1);
+    // console.log("singleDate", singleDate);
+    // startDate = new Date(singleDate);
+    // startDate.setDate(startDate.getDate() + 1);
+    // startDate.setHours(0, 0, 0, 0);
+    // console.log("startDate", startDate);
+    // endDate = new Date(singleDate);
+    // endDate.setDate(endDate.getDate() + 1);
+    // endDate.setHours(23, 59, 59, 999);
+    // console.log("endDate", endDate);
     if (singleDateParam) {
       // For single date, set start date to beginning of day and end date to end of day
       const singleDate = new Date(singleDateParam);
+      singleDate.setDate(singleDate.getDate() + 1);
+      // singleDate.setDate(singleDate.getDate() + 1);
+      console.log("singleDate", singleDate);
       startDate = new Date(singleDate);
-      startDate.setUTCHours(0, 0, 0, 0);
+      startDate.setHours(0, 0, 0, 0);
+      console.log("startDate", startDate);
       endDate = new Date(singleDate);
-      endDate.setUTCHours(23, 59, 59, 999);
+      endDate.setHours(23, 59, 59, 999);
+      console.log("endDate", endDate);
     } else if (startDateParam && endDateParam) {
       startDate = new Date(startDateParam);
+      console.log("startDate param", startDate);
       endDate = new Date(endDateParam);
+      console.log("endDate param", endDate);
       // Set end date to end of day
-      endDate.setUTCHours(23, 59, 59, 999);
+      endDate.setHours(23, 59, 59, 999);
     }
 
     const [orders, totalCount] = await Promise.all([
-      getOrders(startDate, endDate, searchTerm, page, pageSize),
-      getOrdersCount(startDate, endDate, searchTerm),
+      getOrders(startDate, endDate, searchTerm, page, pageSize, username),
+      getOrdersCount(startDate, endDate, searchTerm, username),
     ]);
 
     return NextResponse.json({
